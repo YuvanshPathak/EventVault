@@ -21,7 +21,7 @@ Two separate processes — backend on `:8080`, frontend on `:5173`. Vite proxies
 **Backend, quick start, no Docker/Postgres required** (uses in-memory H2, seeds an admin user and a sample event):
 
 ```bash
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
+mvn spring-boot:run "-Dspring-boot.run.profiles=dev"
 ```
 
 Seeded admin: `admin@eventvault.dev` / `admin1234`. H2 console at `/h2-console` (JDBC URL `jdbc:h2:mem:eventvault`).
