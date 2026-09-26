@@ -55,9 +55,3 @@ Verified against a real Postgres container: 20 concurrent requests for 5 seats, 
 | GET | `/api/bookings/history` | any user | paginated, own bookings only |
 
 Send `Authorization: Bearer <token>` for anything not marked "none".
-
-## What's intentionally out of scope
-
-- No Flyway/Liquibase — `ddl-auto: update` is fine for a practice project, not for anything real. If asked, say so.
-- No refresh tokens / token revocation list.
-- Stretch ideas not built: Redis caching of availability, async email via `@Async`, rate limiting on the booking endpoint. Worth mentioning if asked "what would you add next."
