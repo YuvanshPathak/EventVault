@@ -1,18 +1,24 @@
 # EventVault
 
-An event/ticket booking API built in Spring Boot to practice for Java/Spring interviews. Full stack: JWT auth, role-based access, double-booking prevention (both pessimistic and optimistic locking, side by side), DTOs, global exception handling, pagination, and tests (Mockito unit tests + a Testcontainers integration test that proves the locking under real concurrency).
+An event/ticket booking system built to practice for Java/Spring interviews. Spring Boot backend + a thin React frontend. Full stack: JWT auth, role-based access, double-booking prevention (both pessimistic and optimistic locking, side by side), DTOs, global exception handling, pagination, and tests (Mockito unit tests + a Testcontainers integration test that proves the locking under real concurrency).
 
 ## Stack
 
+**Backend**
 - Java 21, Spring Boot 3.3.4
 - Spring Web, Spring Data JPA, Spring Security
 - PostgreSQL (H2 for the `dev` profile — no Docker needed to run locally)
 - JWT via `jjwt`
 - JUnit 5, Mockito, AssertJ, Testcontainers
 
+**Frontend**
+- React 19 + Vite, plain CSS — deliberately thin, just enough to exercise every backend endpoint (login/register, browse events, book with either locking strategy, cancel, booking history, admin event creation)
+
 ## Running it
 
-**Quick start, no Docker/Postgres required** (uses in-memory H2, seeds an admin user and a sample event):
+Two separate processes — backend on `:8080`, frontend on `:5173`. Vite proxies `/api/**` to the backend in dev, so the browser only ever talks to one origin.
+
+**Backend, quick start, no Docker/Postgres required** (uses in-memory H2, seeds an admin user and a sample event):
 
 ```bash
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
@@ -20,7 +26,7 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
 Seeded admin: `admin@eventvault.dev` / `admin1234`. H2 console at `/h2-console` (JDBC URL `jdbc:h2:mem:eventvault`).
 
-**Against real Postgres:**
+**Backend against real Postgres:**
 
 ```bash
 docker compose up -d
@@ -28,6 +34,16 @@ mvn spring-boot:run
 ```
 
 Uses `DB_HOST`/`DB_PORT`/`DB_NAME`/`DB_USER`/`DB_PASSWORD`/`JWT_SECRET` env vars if you want to override the defaults in `application.yml`.
+
+**Frontend:**
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173`.
 
 ## Running the tests
 
