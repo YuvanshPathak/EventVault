@@ -36,6 +36,8 @@ mvn test                          # unit tests (Mockito) - no Docker needed
 mvn -Dtest=BookingConcurrencyIntegrationTest test   # needs Docker running (Testcontainers spins up real Postgres)
 ```
 
+Verified against a real Postgres container: 20 concurrent requests for 5 seats, exactly 5 succeed, seat count never goes negative — both for the pessimistic (queued) and optimistic (fail-fast, conflicts retriable) paths.
+
 ## API
 
 | Method | Path | Auth | Notes |
