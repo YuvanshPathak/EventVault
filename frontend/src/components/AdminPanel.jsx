@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { api } from "../api";
+import { useToast } from "../ToastContext";
 
 export default function AdminPanel({ onEventCreated }) {
-  const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const toast = useToast();
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError(null);
     setSubmitting(true);
     const form = new FormData(e.target);
     try {
-      await api("/admin/events", {
+      const event = await api("/admin/events", {
         method: "POST",
         body: JSON.stringify({
           name: form.get("name"),
@@ -22,41 +22,51 @@ export default function AdminPanel({ onEventCreated }) {
         }),
       });
       e.target.reset();
+      toast.success(`Created "${event.name}"`);
       onEventCreated();
     } catch (err) {
-      setError(err.message);
+      toast.error(err.message);
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <section className="card">
-      <h2>Create event (admin)</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Name
-          <input type="text" name="name" required />
-        </label>
-        <label>
-          Venue
-          <input type="text" name="venue" required />
-        </label>
-        <label>
-          Description
-          <input type="text" name="description" />
-        </label>
-        <label>
-          Start time
-          <input type="datetime-local" name="startTime" required />
-        </label>
-        <label>
-          Total seats
-          <input type="number" name="totalSeats" min="1" defaultValue={10} required />
-        </label>
-        <button type="submit" disabled={submitting}>Create event</button>
+    <section className="panel">
+      <div className="panel-header">
+        <div>
+          <h2>Create event</h2>
+          <p className="panel-subtitle">Admin only — publish a new event for people to book.</p>
+        </div>
+      </div>
+
+      <form className="admin-form" onSubmit={handleSubmit}>
+        <div className="form-grid">
+          <label>
+            Name
+            <input type="text" name="name" placeholder="Spring Boot Conf 2027" required />
+          </label>
+          <label>
+            Venue
+            <input type="text" name="venue" placeholder="Main Auditorium" required />
+          </label>
+          <label className="span-2">
+            Description
+            <input type="text" name="description" placeholder="Optional" />
+          </label>
+          <label>
+            Start time
+            <input type="datetime-local" name="startTime" required />
+          </label>
+          <label>
+            Total seats
+            <input type="number" name="totalSeats" min="1" defaultValue={10} required />
+          </label>
+        </div>
+        <button type="submit" disabled={submitting}>
+          {submitting ? "Creating…" : "Create event"}
+        </button>
       </form>
-      {error && <p className="error">{error}</p>}
     </section>
   );
 }
